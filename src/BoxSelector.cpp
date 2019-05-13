@@ -1,5 +1,6 @@
 #include "BoxSelector.hpp"
 #include "BoxSelector/FirstAvailableBoxSelector.hpp"
+#include "BoxSelector/RandomBoxSelector.hpp"
 
 namespace ashley::progress_tracker {
 
@@ -7,7 +8,8 @@ BoxSelector::BS_Range
 BoxSelector::getKnownBsIds() {
   using namespace box_selector;
   static std::vector<BoxSelector::BS_ID> knownBsIds {
-    FirstAvailableBoxSelector::id
+    FirstAvailableBoxSelector::id,
+    RandomBoxSelector::id
   };
   return BoxSelector::BS_Range( knownBsIds );
 }
@@ -23,6 +25,8 @@ BoxSelector:: create( BS_ID nbsId ) {
   if ( selectorsMap_.find( nbsId ) == selectorsMap_.end() ) {
     if ( nbsId == FirstAvailableBoxSelector::id ) {
       selectorsMap_.insert({ nbsId, std::make_unique<FirstAvailableBoxSelector>() });
+    } else if ( nbsId == RandomBoxSelector::id ) {
+      selectorsMap_.insert({ nbsId, std::make_unique<RandomBoxSelector>() });
     } else {
       throw std::invalid_argument( "BoxSelector with id " + nbsId + " is not supported!" );
     }
