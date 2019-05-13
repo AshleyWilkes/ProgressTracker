@@ -14,6 +14,6 @@ add_executable (main ${main_sources})
 ###Tests
 list(REMOVE_ITEM main_sources "${CMAKE_SOURCE_DIR}/src/main.cpp")
 file(GLOB_RECURSE test_sources "test/*.cpp")
-add_executable (main_test ${test_sources} ${main_source})
+add_executable (main_test ${test_sources} ${main_sources})
 target_include_directories (main_test PUBLIC "src")
 target_link_libraries (main_test /usr/local/lib/boost_1_69_0/libboost_unit_test_framework.so)
