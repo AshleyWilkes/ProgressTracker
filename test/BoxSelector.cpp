@@ -28,7 +28,7 @@ BOOST_AUTO_TEST_SUITE( BoxSelectorTest )
     BOOST_REQUIRE_NO_THROW( BoxSelector::getKnownBsIds() );
   }
 
-  BOOST_AUTO_TEST_CASE( test_1b_result ) {
+  /*BOOST_AUTO_TEST_CASE( test_1b_result ) {
     //arrange
     //act
     //assert
@@ -40,20 +40,9 @@ BOOST_AUTO_TEST_SUITE( BoxSelectorTest )
     while ( maxExpectedBsCount-- > 0 && begin++ != knownBsIdsRange.end() );
     bool endFound = begin == knownBsIdsRange.end();
     BOOST_TEST_REQUIRE( endFound, "Too long (perhaps invalid?) range returned" );
-  }
+  }*/
 
-  BOOST_AUTO_TEST_CASE( test_2a_select_return_value_sanity_check ) {
-    //arrange
-    for ( auto bsId : BoxSelector::getKnownBsIds() ) {
-      //act
-      std::size_t val = BoxSelector::select( nonEmptyInputRange, bsId );
-      //assert
-      BOOST_TEST( val >= 0 );
-      BOOST_TEST( val < nonEmptyInputVals.size() );
-    }
-  }
-
-  BOOST_AUTO_TEST_CASE( test_2b_select_throw_on_empty_input ) {
+  BOOST_AUTO_TEST_CASE( test_2a_select_throw_on_empty_input ) {
     //arrange
     for ( auto bsId : BoxSelector::getKnownBsIds() ) {
       //act
@@ -64,7 +53,7 @@ BOOST_AUTO_TEST_SUITE( BoxSelectorTest )
     }
   }
 
-  BOOST_AUTO_TEST_CASE( test_2c_select_throw_on_invalid_bsId ) {
+  BOOST_AUTO_TEST_CASE( test_2b_select_throw_on_invalid_bsId ) {
     //arrange
     //act
     //assert
@@ -73,11 +62,22 @@ BOOST_AUTO_TEST_SUITE( BoxSelectorTest )
         std::invalid_argument );
   }
 
+  BOOST_AUTO_TEST_CASE( test_2c_select_return_value_sanity_check ) {
+    //arrange
+    for ( auto bsId : BoxSelector::getKnownBsIds() ) {
+      //act
+      std::size_t val = BoxSelector::select( nonEmptyInputRange, bsId );
+      //assert
+      BOOST_TEST( val >= 0 );
+      BOOST_TEST( val < nonEmptyInputVals.size() );
+    }
+  }
+
   BOOST_AUTO_TEST_CASE( test_3a_create_sanity_check ) {
     //arrange
     for ( auto bsId : BoxSelector::getKnownBsIds() ) {
       //act
-      auto selector = BoxSelector::create( bsId );
+      auto& selector = BoxSelector::create( bsId );
       //assert
       BOOST_TEST( selector.get() != nullptr );
     }
@@ -93,7 +93,7 @@ BOOST_AUTO_TEST_SUITE( BoxSelectorTest )
   BOOST_AUTO_TEST_CASE( test_4a_create_select_return_value_sanity_check ) {
     //arrange
     for ( auto bsId : BoxSelector::getKnownBsIds() ) {
-      auto selector = BoxSelector::create( bsId );
+      auto& selector = BoxSelector::create( bsId );
       //act
       std::size_t val = selector->select( nonEmptyInputRange );
       //assert
@@ -105,10 +105,10 @@ BOOST_AUTO_TEST_SUITE( BoxSelectorTest )
   BOOST_AUTO_TEST_CASE( test_4b_create_select_throw_on_empty_input ) {
     //arrange
     for ( auto bsId : BoxSelector::getKnownBsIds() ) {
-      auto selector = BoxSelector::create( bsId );
+      auto& selector = BoxSelector::create( bsId );
       //act
       //assert
-      BOOST_CHECK_THROW( selector->select( emptyInputRange ), std::invalid_argument );
+      BOOST_CHECK_THROW( selector->select( emptyInputRange ), std::domain_error );
     }
   }
 
