@@ -23,12 +23,10 @@ namespace ashley::progress_tracker {
 
       static BS_Range getKnownBsIds();
 
-      //static int select(IntIter first, IntIter last, BS_ID nbsId);
       static std::size_t select( IntRange inputRange, BS_ID nbsId );
 
       static BS_UPtr& create( BS_ID nbsId );
 
-      //virtual int select( IntIter first, IntIter last ) const = 0;
       virtual std::size_t select( IntRange inputRange ) const = 0;
 
       virtual ~BoxSelector() = 0;
