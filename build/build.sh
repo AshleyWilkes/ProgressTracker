@@ -1,2 +1,2 @@
 #!/bin/bash
-cmake .. && make all && ./main_test
+clear && cmake .. && make all && ./main_test
