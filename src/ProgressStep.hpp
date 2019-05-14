@@ -19,4 +19,10 @@ namespace ashley::progress_tracker {
       friend bool operator==( const ProgressStep& lhs, const ProgressStep& rhs );
       friend bool operator!=( const ProgressStep& lhs, const ProgressStep& rhs );
   };
+
+  template<typename Archive>
+  void
+  ProgressStep::serialize( Archive& ar, const unsigned int version ) {
+    ar & capacity_;
+  }
 }
