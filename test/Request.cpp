@@ -20,6 +20,21 @@ class DummyRequest : public Request<DummyProgressStep> {
     }
 };
 
+class LimitingDummyRequest : public Request<ProgressStep> {
+  public:
+    LimitingDummyRequest( std::size_t totalCapacity, std::size_t maxPSCapacity = 3 ) :
+          Request( totalCapacity ), maxPSCapacity_{ maxPSCapacity } {}
+
+    UPS createProgressStep( std::size_t capacity ) override {
+      if ( capacity > maxPSCapacity_ ) {
+        capacity = maxPSCapacity_;
+      }
+      return std::make_unique<DummyProgressStep>( capacity );
+    }
+  private:
+    const std::size_t maxPSCapacity_;
+};
+
 BOOST_AUTO_TEST_SUITE( RequestTest )
   template<typename PS>
   void checkRequestInvariants( const Request<PS>& req ) {
@@ -36,11 +51,13 @@ BOOST_AUTO_TEST_SUITE( RequestTest )
     checkRequestInvariants( req );
   }
 
+  template<typename R>//R -- Request
   void checkUseCapacity( std::size_t initial, std::size_t requested, std::size_t received, std::size_t remaining ) {
-    DummyRequest req{ initial };
+    R req{ initial };
     //act
     ProgressStep* ps = req.useCapacity( requested ).get();
     //assert
+    BOOST_CHECK( ps != nullptr );
     BOOST_CHECK( ps->getCapacity() == received );
     BOOST_CHECK( req.getAvailableCapacity() == remaining );
     checkRequestInvariants( req );
@@ -55,6 +72,8 @@ BOOST_AUTO_TEST_SUITE( RequestTest )
   //        usedCapacity se prislusnym zpusobem zvetsi
   //        plati invarianty 4 metod
   //2d) useCapacity throw, kdyz je capacity plne vyuzita
+  //3a) useCapacity pridava k usedCaoacity_ skutecnou kapacity vraceneho ProgressStepu,
+  //        i kdyz se tato lisi od pozadovane
   BOOST_AUTO_TEST_CASE( test_1a_create_not_ok_with_non_positive_value ) {
     //arrange
     //act
@@ -90,15 +109,15 @@ BOOST_AUTO_TEST_SUITE( RequestTest )
     //arrange
     //act
     //assert
-    checkUseCapacity( 5, 1, 1, 4 );
-    checkUseCapacity( 8, 8, 8, 0 );
+    checkUseCapacity<DummyRequest>( 5, 1, 1, 4 );
+    checkUseCapacity<DummyRequest>( 8, 8, 8, 0 );
   }
 
   BOOST_AUTO_TEST_CASE( test_2c_use_capacity_available_when_requested_too_much ) {
     //arrange
     //act
     //assert
-    checkUseCapacity( 1248, 7261, 1248, 0 );
+    checkUseCapacity<DummyRequest>( 1248, 7261, 1248, 0 );
   }
 
   BOOST_AUTO_TEST_CASE( test_2d_use_capacity_throw_on_fully_processed ) {
@@ -108,5 +127,13 @@ BOOST_AUTO_TEST_SUITE( RequestTest )
     req.useCapacity( 3 );
     //assert
     BOOST_REQUIRE_THROW( req.useCapacity( 1 ), std::domain_error );
+  }
+
+  BOOST_AUTO_TEST_CASE( test_2e_use_capacity_respects_actual_PS_capacity ) {
+    //arrange
+    //act
+    //assert
+    checkUseCapacity<LimitingDummyRequest>( 5, 1, 1, 4 );
+    checkUseCapacity<LimitingDummyRequest>( 8, 8, 3, 5 );
   }
 BOOST_AUTO_TEST_SUITE_END()
