@@ -1,5 +1,5 @@
 #pragma once
-#include <cstddef>
+#include <cstddef>//size_t
 
 namespace ashley::progress_tracker {
   class ProgressStep {
