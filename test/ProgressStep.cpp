@@ -1,8 +1,9 @@
 #define BOOST_TEST_DYN_LINK
+#include "boost/test/unit_test.hpp"
+
 #include "boost/archive/text_iarchive.hpp"
 #include "boost/archive/text_oarchive.hpp"
 #include "boost/serialization/base_object.hpp"
-#include "boost/test/unit_test.hpp"
 
 #include "ProgressStep.hpp"
 
