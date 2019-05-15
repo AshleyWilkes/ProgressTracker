@@ -72,7 +72,7 @@ BOOST_AUTO_TEST_SUITE( RequestTest )
   //        usedCapacity se prislusnym zpusobem zvetsi
   //        plati invarianty 4 metod
   //2d) useCapacity throw, kdyz je capacity plne vyuzita
-  //3a) useCapacity pridava k usedCaoacity_ skutecnou kapacity vraceneho ProgressStepu,
+  //2e) useCapacity pridava k usedCaoacity_ skutecnou kapacity vraceneho ProgressStepu,
   //        i kdyz se tato lisi od pozadovane
   BOOST_AUTO_TEST_CASE( test_1a_create_not_ok_with_non_positive_value ) {
     //arrange
