@@ -25,8 +25,9 @@ std::ostream& operator<<( std::ostream& os, const DummyProgressStep& rhs ) {
 
 BOOST_AUTO_TEST_SUITE( ProgressStepTest )
   //1) Parametr capacity konstruktoru musi byt kladny, jinak vyjimka
-  //2) operator==() funguje
-  //3) serialize funguje, tj. lze objekt zapsat do streamu, z nej
+  //2) Pri uspesne konstrukci vraci getCapacity() predanou hodnotu
+  //3) operator==() funguje
+  //4) serialize funguje, tj. lze objekt zapsat do streamu, z nej
   //    nacist obsah druheho objektu a ziskat tak dva totozne objekty
   BOOST_AUTO_TEST_CASE( test_1a_create_ok_with_positive_value ) {
     //arrange
@@ -43,7 +44,15 @@ BOOST_AUTO_TEST_SUITE( ProgressStepTest )
     BOOST_CHECK_THROW( DummyProgressStep( 0 ), std::domain_error );
   }
 
-  BOOST_AUTO_TEST_CASE( test_2a_equal_identical_objects ) {
+  BOOST_AUTO_TEST_CASE( test_2_get_capacity_returns_correct_value ) {
+    //arrange
+    DummyProgressStep pS{ 1346 };
+    //act
+    //assert
+    BOOST_TEST( pS.getCapacity() == 1346 );
+  }
+
+  BOOST_AUTO_TEST_CASE( test_3a_equal_identical_objects ) {
     //arrange
     DummyProgressStep pS1{ 1 };
     //act
@@ -51,7 +60,7 @@ BOOST_AUTO_TEST_SUITE( ProgressStepTest )
     BOOST_TEST( pS1 == pS1 );
   }
 
-  BOOST_AUTO_TEST_CASE( test_2b_equal_different_object_same_initializer ) {
+  BOOST_AUTO_TEST_CASE( test_3b_equal_different_object_same_initializer ) {
     //arrange
     DummyProgressStep pS1{ 1 };
     DummyProgressStep pS2{ 1 };
@@ -60,7 +69,7 @@ BOOST_AUTO_TEST_SUITE( ProgressStepTest )
     BOOST_TEST( pS1 == pS2 );
   }
 
-  BOOST_AUTO_TEST_CASE( test_2c_equal_different_object_different_initializers ) {
+  BOOST_AUTO_TEST_CASE( test_3c_equal_different_object_different_initializers ) {
     //arrange
     DummyProgressStep pS1{ 1 };
     DummyProgressStep pS2{ 23491 };
@@ -69,7 +78,7 @@ BOOST_AUTO_TEST_SUITE( ProgressStepTest )
     BOOST_TEST( pS1 != pS2 );
   }
 
-  BOOST_AUTO_TEST_CASE( test_3_serialize_works ) {
+  BOOST_AUTO_TEST_CASE( test_4_serialize_works ) {
     //arrange
     DummyProgressStep pSSource{ 12144 };
     DummyProgressStep pSTarget{ 1 };
