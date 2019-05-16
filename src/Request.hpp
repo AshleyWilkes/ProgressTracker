@@ -49,6 +49,9 @@ namespace ashley::progress_tracker {
     }
     //vytvorit vysledek
     auto result = createProgressStep( capacity );
+    if ( result == nullptr ) {
+      throw std::runtime_error( "bad implementation; createProgressStep returned nullptr" );
+    }
     //pridat skutecne pouzitou kapacitu k usedCapacity_
     usedCapacity_ += result->getCapacity();
     //vratit vysledek
