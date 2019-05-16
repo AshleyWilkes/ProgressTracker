@@ -8,11 +8,10 @@
 namespace ashley::progress_tracker::progress_step {
   class TimePointProgressStep : public ProgressStep {
     public:
-      TimePointProgressStep( std::size_t capacity, boost::posix_time::ptime timePoint ) :
-          ProgressStep{ capacity }, timePoint_{ timePoint } {
-            if ( timePoint.is_not_a_date_time() ) {
-              throw std::domain_error{ "Invalid date time" };
-            }
+      TimePointProgressStep( std::size_t capacity, boost::posix_time::ptime timePoint ) : ProgressStep{ capacity }, timePoint_{ timePoint } {
+        if ( timePoint.is_not_a_date_time() ) {
+          throw std::domain_error{ "Invalid date time" };
+        }
       }
       boost::posix_time::ptime getTimePoint() const { return timePoint_; }
 
