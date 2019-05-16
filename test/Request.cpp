@@ -14,7 +14,7 @@ class DummyProgressStep : public ProgressStep {
 class DummyRequest : public Request<DummyProgressStep> {
   public:
     DummyRequest( std::size_t totalCapacity ) : Request( totalCapacity ) {}
-
+  private:
     UPS createProgressStep( std::size_t capacity ) override {
       return std::make_unique<DummyProgressStep>( capacity );
     }
@@ -25,14 +25,24 @@ class LimitingDummyRequest : public Request<ProgressStep> {
     LimitingDummyRequest( std::size_t totalCapacity, std::size_t maxPSCapacity = 3 ) :
           Request( totalCapacity ), maxPSCapacity_{ maxPSCapacity } {}
 
+  private:
     UPS createProgressStep( std::size_t capacity ) override {
       if ( capacity > maxPSCapacity_ ) {
         capacity = maxPSCapacity_;
       }
       return std::make_unique<DummyProgressStep>( capacity );
     }
-  private:
+
     const std::size_t maxPSCapacity_;
+};
+
+class BadlyImpledRequest : public Request<ProgressStep> {
+  public:
+    BadlyImpledRequest( std::size_t capacity ) : Request( capacity ) {}
+  private:
+    UPS createProgressStep( std::size_t capacity) override {
+      return nullptr;
+    }
 };
 
 BOOST_AUTO_TEST_SUITE( RequestTest )
@@ -65,14 +75,15 @@ BOOST_AUTO_TEST_SUITE( RequestTest )
   //1a) Parametr totalCapacity konstruktoru nekladny => vyjimka
   //1b) Parametr kladny => vytvoren objekt se spravnou kapacitou a invarianty 4 metod
   //2a) useCapacity throw, kdyz je pozadavek nekladny
-  //2b) useCapacity vrati ProgressStep s pozadovanou kapacitou, pokud ji jeste ma
+  //2b) useCapacity throw, kdyz createProgressStep vrati nullptr
+  //2c) useCapacity vrati ProgressStep s pozadovanou kapacitou, pokud ji jeste ma
   //        usedCapacity se prislusnym zpusobem zvetsi
   //        plati invarianty 4 metod
-  //2c) useCapacity vrati ProgressStep s kapacitou, kterou ma, pokud pozadavek je vetsi
+  //2d) useCapacity vrati ProgressStep s kapacitou, kterou ma, pokud pozadavek je vetsi
   //        usedCapacity se prislusnym zpusobem zvetsi
   //        plati invarianty 4 metod
-  //2d) useCapacity throw, kdyz je capacity plne vyuzita
-  //2e) useCapacity pridava k usedCaoacity_ skutecnou kapacity vraceneho ProgressStepu,
+  //2e) useCapacity throw, kdyz je capacity plne vyuzita
+  //2f) useCapacity pridava k usedCaoacity_ skutecnou kapacity vraceneho ProgressStepu,
   //        i kdyz se tato lisi od pozadovane
   BOOST_AUTO_TEST_CASE( test_1a_create_not_ok_with_non_positive_value ) {
     //arrange
@@ -105,7 +116,15 @@ BOOST_AUTO_TEST_SUITE( RequestTest )
     BOOST_REQUIRE_THROW( req.useCapacity( 0 ), std::domain_error );
   }
 
-  BOOST_AUTO_TEST_CASE( test_2b_use_capacity_requested_when_available ) {
+  BOOST_AUTO_TEST_CASE( test_2b_use_capacity_throw_when_createProgressStep_returns_nullptr ) {
+    //arrange
+    BadlyImpledRequest req{ 1 };
+    //act
+    //assert
+    BOOST_REQUIRE_THROW( req.useCapacity( 1 ), std::runtime_error );
+  }
+
+  BOOST_AUTO_TEST_CASE( test_2c_use_capacity_requested_when_available ) {
     //arrange
     //act
     //assert
@@ -113,14 +132,14 @@ BOOST_AUTO_TEST_SUITE( RequestTest )
     checkUseCapacity<DummyRequest>( 8, 8, 8, 0 );
   }
 
-  BOOST_AUTO_TEST_CASE( test_2c_use_capacity_available_when_requested_too_much ) {
+  BOOST_AUTO_TEST_CASE( test_2d_use_capacity_available_when_requested_too_much ) {
     //arrange
     //act
     //assert
     checkUseCapacity<DummyRequest>( 1248, 7261, 1248, 0 );
   }
 
-  BOOST_AUTO_TEST_CASE( test_2d_use_capacity_throw_on_fully_processed ) {
+  BOOST_AUTO_TEST_CASE( test_2e_use_capacity_throw_on_fully_processed ) {
     //arrange
     DummyRequest req{ 3 };
     //act
@@ -129,7 +148,7 @@ BOOST_AUTO_TEST_SUITE( RequestTest )
     BOOST_REQUIRE_THROW( req.useCapacity( 1 ), std::domain_error );
   }
 
-  BOOST_AUTO_TEST_CASE( test_2e_use_capacity_respects_actual_PS_capacity ) {
+  BOOST_AUTO_TEST_CASE( test_2f_use_capacity_respects_actual_PS_capacity ) {
     //arrange
     //act
     //assert
