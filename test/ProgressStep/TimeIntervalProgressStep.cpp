@@ -97,6 +97,7 @@ BOOST_AUTO_TEST_SUITE( TimeIntervalProgressStepTest )
     BOOST_TEST( pS.getCapacity() == 72 );
     BOOST_TEST( pS.getBeginTimePoint() == begin );
     BOOST_TEST( pS.getEndTimePoint() == end );
+    BOOST_TEST( pS.getDuration() == end - begin );
   }
 
   BOOST_AUTO_TEST_CASE( test_3a_equal_identical_objects ) {
