@@ -21,6 +21,7 @@ namespace ashley::progress_tracker::progress_step {
       }
       boost::posix_time::ptime getBeginTimePoint() const { return beginTimePoint_; }
       boost::posix_time::ptime getEndTimePoint() const { return endTimePoint_; }
+      boost::posix_time::time_duration getDuration() const { return endTimePoint_ - beginTimePoint_; }
 
       template<typename Archive>
       void serialize( Archive& ar, const unsigned int version );
