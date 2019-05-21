@@ -45,22 +45,26 @@ class BadlyImpledRequest : public Request<ProgressStep> {
     }
 };
 
-BOOST_AUTO_TEST_SUITE( RequestTest )
-  template<typename PS>
-  void checkRequestInvariants( const Request<PS>& req ) {
-    BOOST_TEST( req.isFullyProcessed() == ( req.getAvailableCapacity() == 0 ) );
-    BOOST_TEST( req.getTotalCapacity() > 0 );
-    BOOST_TEST( req.getUsedCapacity() >= 0 );
-    BOOST_TEST( req.getAvailableCapacity() >= 0 );
-    BOOST_TEST( req.getUsedCapacity() + req.getAvailableCapacity() == req.getTotalCapacity() );
-  }
+template<typename PS>
+void checkRequestInvariants( const Request<PS>& req ) {
+  BOOST_TEST( req.isFullyProcessed() == ( req.getAvailableCapacity() == 0 ) );
+  BOOST_TEST( req.getTotalCapacity() > 0 );
+  BOOST_TEST( req.getUsedCapacity() >= 0 );
+  BOOST_TEST( req.getAvailableCapacity() >= 0 );
+  BOOST_TEST( req.getUsedCapacity() + req.getAvailableCapacity() == req.getTotalCapacity() );
+}
 
+BOOST_AUTO_TEST_SUITE( RequestTest )
   void createRequestAndCheckInvariants( std::size_t capacity ) {
     DummyRequest req{ capacity };
     BOOST_TEST( req.getTotalCapacity() == capacity );
     checkRequestInvariants( req );
   }
 
+  //tohle podporuje pouze jedine volani useCapacity, coz je skoda
+  //upravit na vice volani a pripsat test, ktery toho vyuzije,
+  //jinak ted neni duvod predpokladat, ze bude fungovat, kdyz se
+  //jeden request ma rozhodit do vice boxu
   template<typename R>//R -- Request
   void checkUseCapacity( std::size_t initial, std::size_t requested, std::size_t received, std::size_t remaining ) {
     R req{ initial };
