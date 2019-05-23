@@ -42,7 +42,7 @@ std::ostream& operator<<( std::ostream& os, const DummyProgressStep& pS); /*{
 
 template<typename PS>
 std::ostream& operator<<( std::ostream& os, const Box<PS>& box ) {
-  os << "Box with " << box.getProgressSteps().size() << " progress steps:\n";
+  os << "Box with capacity " << box.getAvailableCapacity() << "/" << box.getTotalCapacity() << " and " << box.getProgressSteps().size() << " progress steps:\n";
   for ( auto pS : box.getProgressSteps() ) {
     os << "    --- " << pS << "\n";
   }
