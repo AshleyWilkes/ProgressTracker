@@ -16,11 +16,11 @@ BOOST_AUTO_TEST_SUITE( StringInputMapTest )
   //  - success when possible
   //Note: conversion is not tested, since only conversion to std::string is implemented,
   //no other conversion compiles
-  BOOST_AUTO_TEST_CASE( test_1a_key_doesnt_exist ) {
+  BOOST_AUTO_TEST_CASE( test_2a_key_doesnt_exist ) {
     BOOST_CHECK_THROW( input_map_.getAs<std::string>( "four" ), std::out_of_range );
   }
 
-  BOOST_AUTO_TEST_CASE( test_1b_ok ) {
+  BOOST_AUTO_TEST_CASE( test_2b_ok ) {
     BOOST_TEST( input_map_.getAs<std::string>( "one" ) == "1" );
     BOOST_TEST( input_map_.getAs<std::string>( "two" ) == "2" );
     BOOST_TEST( input_map_.getAs<std::string>( "three" ) == "3" );
