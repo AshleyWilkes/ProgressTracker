@@ -52,11 +52,11 @@ class DummyInputMap : public InputMap<int, DummyInputValue> {
 
 DummyInputMap map;
 
-BOOST_AUTO_TEST_SUITE( InputMap )
+BOOST_AUTO_TEST_SUITE( InputMapTest )
   //1) getAs
-  //  - success when possible, check for int, double, std::string
   //  - throw when key doesn't exist
   //  - throw when conversion is not available
+  //  - success when possible
   BOOST_AUTO_TEST_CASE( test_1a_key_doesnt_exist ) {
     BOOST_CHECK_THROW( map.getAs<int>( 3 ), std::out_of_range );
   }
