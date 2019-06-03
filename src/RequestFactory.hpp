@@ -5,6 +5,7 @@
 
 #include "boost/program_options.hpp"
 #include "boost/range/sub_range.hpp"
+#include "boost/range/algorithm/find.hpp"
 
 #include <memory>
 #include <string>
@@ -13,6 +14,13 @@
 namespace ashley::progress_tracker::request_factory {
   using RF_ID = std::string;
   using RF_Range = boost::sub_range<std::vector<RF_ID>>;
+
+  template<typename R, typename I>
+  class RequestFactory;
+
+  template<typename R, typename I>
+  std::unique_ptr<RequestFactory<R, I>> createFactory( RF_ID rfId );
+
   template<typename R, typename I>
   class RequestFactory {
     public:
@@ -22,8 +30,10 @@ namespace ashley::progress_tracker::request_factory {
 
       virtual ~RequestFactory() = 0;
 
-      static std::unique_ptr<RequestFactory<R, I>> createFactory( RF_ID rfId );
+      friend std::unique_ptr<RequestFactory<R, I>> createFactory<R, I>( RF_ID rfId );
     private:
+      static std::unique_ptr<RequestFactory<R, I>> createFactory( RF_ID rfId );
+
       static std::map<RF_ID, RF_UPtr> factoriesMap_;
   };
 
@@ -34,7 +44,7 @@ namespace ashley::progress_tracker::request_factory {
   std::unique_ptr<RequestFactory<R, I>>
   createFactory( RF_ID rfId ) {
     auto rfIds = getKnownFactoryIds<R>();
-    if ( rfIds.find( rfId ) != rfIds.end() ) {
+    if ( boost::find(rfIds, rfId ) != rfIds.end() ) {
       std::unique_ptr<RequestFactory<R, I>> result = RequestFactory<R, I>::createFactory( rfId );
       if ( ! result ) {
         throw std::invalid_argument( "RequestFactory with id " + rfId + " should have been created, but nullptr was returned instead!" );
