@@ -18,7 +18,7 @@ std::map<std::string, std::string> complete_input_ = { { "capacity", "2224" }, {
 StringInputMap completeInputMap{ complete_input_ };
 
 //1) id TimePointRequestFactory jde pouzit k vytvoreni factory
-std::unique_ptr<RequestFactory<TimePointRequest, StringInputMap>> factory = ::createFactory<TimePointRequest, StringInputMap>( TimePointRequestFactory<StringInputMap>::id );
+std::unique_ptr<RequestFactory<TimePointRequest, StringInputMap>> factory = createFactory<TimePointRequest, StringInputMap>( TimePointRequestFactory<StringInputMap>::id );
 
 BOOST_AUTO_TEST_SUITE( TimePointRequestFactory )
   //2) createRequest vyhodi vyjimku, pokud mu chybi nejaka input hodnota
