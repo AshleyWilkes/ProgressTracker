@@ -16,14 +16,14 @@ class DummyInputValue {
     DummyInputValue( int value ) : value_{ value } {}
 
     template<typename T>
-    T& as();
+    T& as() const;
   private:
     int value_;
 };
 
 template<>
 std::string&
-DummyInputValue::as<std::string>() {
+DummyInputValue::as<std::string>() const {
   if ( value_ == 1 ) {
     return str;
   }
@@ -32,7 +32,7 @@ DummyInputValue::as<std::string>() {
 
 template<>
 int&
-DummyInputValue::as<int>() {
+DummyInputValue::as<int>() const {
   if ( value_ == 2 ) {
     return ii;
   }
@@ -46,7 +46,7 @@ class DummyInputMap : public InputMap<int, DummyInputValue> {
       map_.insert({ 2, DummyInputValue( 2 ) });
     }
   private:
-    DummyInputValue& get( const int& key ) override { return map_.at( key ); }
+    const DummyInputValue& get( const int& key ) const override { return map_.at( key ); }
     std::map<int, DummyInputValue> map_;
 };
 
