@@ -11,6 +11,7 @@ enable_testing()
 ###Executables
 file(GLOB_RECURSE main_sources "src/*.cpp")
 add_executable (main ${main_sources})
+target_link_libraries (main /usr/local/lib/boost_1_69_0/libboost_date_time.so)
 
 ###Tests
 list(REMOVE_ITEM main_sources "${CMAKE_SOURCE_DIR}/src/main.cpp")
