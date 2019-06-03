@@ -45,12 +45,9 @@ BOOST_AUTO_TEST_SUITE( CliInputMapTest, * boost::unit_test::fixture<F>() )
   }
 
   BOOST_AUTO_TEST_CASE( test_2b_conversion_fails ) {
-    //tady je videt, ze implementace InputMapy neni spravne; metoda getAs
-    //totiz pri neuspesne konverzi vyhodi vyjimku, kterou si urci konkretni
-    //implementace value, nikoli vzdy stejny typ vyjimky; to neni dobre
-    BOOST_CHECK_THROW( input_map_.getAs<std::string>( "one" ), boost::bad_any_cast );
-    BOOST_CHECK_THROW( input_map_.getAs<int>( "two" ), boost::bad_any_cast );
-    BOOST_CHECK_THROW( input_map_.getAs<std::string>( "three" ), boost::bad_any_cast );
+    BOOST_CHECK_THROW( input_map_.getAs<std::string>( "one" ), std::invalid_argument );
+    BOOST_CHECK_THROW( input_map_.getAs<int>( "two" ), std::invalid_argument );
+    BOOST_CHECK_THROW( input_map_.getAs<std::string>( "three" ), std::invalid_argument );
   }
 
   BOOST_AUTO_TEST_CASE( test_2c_ok ) {
