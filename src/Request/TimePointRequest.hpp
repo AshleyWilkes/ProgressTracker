@@ -13,6 +13,7 @@ namespace ashley::progress_tracker::request {
           throw std::domain_error{ "Invalid date time" };
         }
       }
+      const boost::posix_time::ptime getTimePoint(){ return timePoint_; }
     private:
       UPS createProgressStep( std::size_t capacity ) override;
       const boost::posix_time::ptime timePoint_;
