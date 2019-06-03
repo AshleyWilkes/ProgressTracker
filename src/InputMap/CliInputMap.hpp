@@ -11,7 +11,7 @@ namespace ashley::progress_tracker::input_map {
     public:
       CliInputMap( const variables_map& input_map ) : input_map_{ input_map } {}
     private:
-      variable_value& get( const std::string& key ) override { return input_map_.at( key ); }
+      const variable_value& get( const std::string& key ) const override { return input_map_.at( key ); }
       variables_map input_map_;
   };
 }
