@@ -19,6 +19,8 @@ namespace ashley::progress_tracker::request {
           throw std::domain_error{ "Invalid interval" };
         }
       }
+      const boost::posix_time::ptime getBeginTimePoint(){ return beginTimePoint_; }
+      const boost::posix_time::ptime getEndTimePoint(){ return endTimePoint_; }
     private:
       UPS createProgressStep( std::size_t capacity ) override;
       const boost::posix_time::ptime beginTimePoint_;
